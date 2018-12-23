@@ -1,0 +1,21 @@
+﻿@model PortalDataPresentation.ViewModels.LineChartViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <br />
+    <br />
+<h2>Measurements for @Model.Data.First().DataTypeName</h2>
+<form method="post" enctype="multipart/form-data" asp-controller="MeasurementDatas" asp-action="UpdateView">
+<input type="submit" value="Update" class="btn btn-default" />
+</form>
+<div class="col-md-6; col-lg-12">
+    @await Html.PartialAsync("RefreshTable", Model.Data)
+</div>
+<div class="col-md-6; col-lg-12">
+    @await Html.PartialAsync("LineChart", Model)
+</div>
+
+
+

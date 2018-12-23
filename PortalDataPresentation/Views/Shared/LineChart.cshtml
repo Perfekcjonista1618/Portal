@@ -1,0 +1,60 @@
+﻿@model PortalDataPresentation.ViewModels.LineChartViewModel
+@{
+    string width = Model.ChartWidth.HasValue ? @Model.ChartWidth.Value.ToString() : "1000";
+    string height = Model.ChartHeight.HasValue ? @Model.ChartHeight.Value.ToString() : "1000";
+}
+
+<canvas id="myChart" width=@width height="@height"></canvas>
+<script src="~/js/Chart.js"></script>
+<script src="~/portal/js/Chart.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function () {
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx,
+            {
+                type: 'line',
+                data: {
+                    labels: @Json.Serialize(@Model.Data.Select(x=>x.MeasurmentDate)),
+                    datasets: [
+                        {
+                            label: 'Measurement data',
+                            data: @Json.Serialize(@Model.Data.Select(x=>x.Value)),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+
+    })
+
+</script>
