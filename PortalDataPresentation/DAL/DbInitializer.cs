@@ -39,7 +39,7 @@ namespace PortalDataPresentation.DAL
             dataTypes.Add(new DataType { Name = "generatedPower", Description = "Wygenerowana moc", KeyName = "GP", RecordCreateTime = DateTime.UtcNow });
 
             dataTypes.Add(new DataType { Name = "Temperature", Description = "Temperatura otoczenia", KeyName = "Temperature", RecordCreateTime = DateTime.UtcNow });
-            dataTypes.Add(new DataType { Name = "Humidity", Description = "Wilgotność powietrza", KeyName = "Humidity", RecordCreateTime = DateTime.UtcNow });
+            dataTypes.Add(new DataType { Name = "Humidity", Description = "Wilgotnosc powietrza", KeyName = "Humidity", RecordCreateTime = DateTime.UtcNow });
             dataTypes.Add(new DataType { Name = "Photoresistor", Description = "Wygenerowana moc", KeyName = "Photoresistor", RecordCreateTime = DateTime.UtcNow });
 
             dataTypes.ForEach(d => context.DataTypes.Add(d));

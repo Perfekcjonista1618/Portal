@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PortalDataPresentation.ViewModels.MeasurementDataViewModel>
+﻿@model IEnumerable<PortalData.Models.ReceivedMeasurement>
 
 <h3>
     List of measurements
@@ -21,10 +21,10 @@
     @foreach (var item in Model) {
         <tr>
             <td class="text-center">
-                @Html.DisplayFor(modelItem => item.MeasurmentDate)
+                @Html.DisplayFor(modelItem => item.RecordCreateTime)
             </td>
             <td class="text-center">
-                @Html.DisplayFor(modelItem => item.DataTypeName)
+                @Html.DisplayFor(modelItem => item.DataTypeKeyName)
             </td>
             <td class="text-center">
                 @Html.DisplayFor(modelItem => item.Value)

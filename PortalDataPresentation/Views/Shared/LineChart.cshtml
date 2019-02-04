@@ -1,4 +1,4 @@
-﻿@model PortalDataPresentation.ViewModels.LineChartViewModel
+﻿@model PortalDataPresentation.ViewModels.LineChartVM
 @{
     string width = Model.ChartWidth.HasValue ? @Model.ChartWidth.Value.ToString() : "1000";
     string height = Model.ChartHeight.HasValue ? @Model.ChartHeight.Value.ToString() : "1000";
@@ -15,7 +15,7 @@
             {
                 type: 'line',
                 data: {
-                    labels: @Json.Serialize(@Model.Data.Select(x=>x.MeasurmentDate)),
+                    labels: @Json.Serialize(@Model.Data.Select(x=>x.RecordCreateTime)),
                     datasets: [
                         {
                             label: 'Measurement data',
