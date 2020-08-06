@@ -36,60 +36,32 @@ namespace PortalDataPresentation.Controllers
             IQueryable<ReceivedMeasurement> measurements;
             IQueryable<MeasurementDataViewModel> measurementsVM;
             LineChartVM viewModel;
-            try
+
+            if (!string.IsNullOrWhiteSpace(dataTypeName))
+                measurements = _receivedMeasurementsRepo
+                               .SearchBy(x => x.DataTypeKeyName == dataTypeName);
+            else
+                measurements = _receivedMeasurementsRepo.SearchBy(x => x.DataTypeKeyName == "Temperature");
+
+            viewModel = new LineChartVM()
             {
+                ChartHeight = resultHeight,
+                ChartWidth = resultWidth,
+                Data = measurements.ToList()
+            };
 
-                // var measurements = await _repository.GetAllAsync(d => d.DataType, l => l.Location, i => i.Instalation);
-
-                //if (portalID != null)
-                //    measurements = _measurementsRepo.SearchBy(x => x.InstalationID == portalID);
-                //else
-                //    measurements = _measurementsRepo.SearchBy(x => x.InstalationID == 1);
-
-                if (!string.IsNullOrWhiteSpace(dataTypeName))
-                    measurements = _receivedMeasurementsRepo
-                        .SearchBy(x => x.DataTypeKeyName == dataTypeName);
-                else
-                    measurements = _receivedMeasurementsRepo.SearchBy(x => x.DataTypeKeyName == "Temperature");
-
-
-                //measurementsVM = measurements.Select(x => _mapper.Map<MeasurementData, MeasurementDataViewModel>(x));
-                //viewModel = new LineChartViewModel()
-                //{
-                //    ChartHeight = resultHeight,
-                //    ChartWidth = resultWidth,
-                //    Data = measurementsVM.ToList()
-                //};
-                viewModel = new LineChartVM()
-                {
-                    ChartHeight = resultHeight,
-                    ChartWidth = resultWidth,
-                    Data = measurements.ToList()
-                };
-
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
             return View(viewModel);
         }
 
         public async Task<PartialViewResult> RefreshTable(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate)
         {
             IQueryable<ReceivedMeasurement> measurements;
-            try
-            {
-                measurements = _receivedMeasurementsRepo.Get();
-                if (!string.IsNullOrEmpty(dataTypeName))
-                    measurements = measurements.Where(m => m.DataTypeKeyName.Equals(dataTypeName));
-                else
-                    measurements = measurements.Where(m => m.DataTypeKeyName.Equals("Temperature"));
-            }
-            catch (Exception)
-            {
-                return PartialView(StatusCode(500));
-            }
+            measurements = _receivedMeasurementsRepo.Get();
+            if (!string.IsNullOrEmpty(dataTypeName))
+                measurements = measurements.Where(m => m.DataTypeKeyName.Equals(dataTypeName));
+            else
+                measurements = measurements.Where(m => m.DataTypeKeyName.Equals("Temperature"));
+
             return PartialView(measurements);
         }
         public async Task<IActionResult> LineChart(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, int? resultWidth, int? resultHeight)
@@ -97,30 +69,24 @@ namespace PortalDataPresentation.Controllers
             LineChartVM viewModel;
             IQueryable<ReceivedMeasurement> filteredMesurments;
             IQueryable<ReceivedMeasurement> measurements;
-            try
-            {
-                measurements = _receivedMeasurementsRepo.Get();
 
-                filteredMesurments = measurements;
-                if (!string.IsNullOrEmpty(dataTypeName))
-                    filteredMesurments = filteredMesurments.Where(r => r.DataTypeKeyName == dataTypeName);
-                if (minDate.HasValue)
-                    filteredMesurments = filteredMesurments.Where(r => r.RecordCreateTime >= minDate);
-                if (maxDate.HasValue)
-                    filteredMesurments = filteredMesurments.Where(r => r.RecordCreateTime <= maxDate);
+            measurements = _receivedMeasurementsRepo.Get();
 
-                //var measurementsVM = measurements.Select(x => _mapper.Map<MeasurementData, MeasurementDataViewModel>(x));
-                viewModel = new LineChartVM()
-                {
-                    ChartHeight = resultHeight,
-                    ChartWidth = resultWidth,
-                    Data = filteredMesurments.ToList()
-                };
-            }
-            catch (Exception)
+            filteredMesurments = measurements;
+            if (!string.IsNullOrEmpty(dataTypeName))
+                filteredMesurments = filteredMesurments.Where(r => r.DataTypeKeyName == dataTypeName);
+            if (minDate.HasValue)
+                filteredMesurments = filteredMesurments.Where(r => r.RecordCreateTime >= minDate);
+            if (maxDate.HasValue)
+                filteredMesurments = filteredMesurments.Where(r => r.RecordCreateTime <= maxDate);
+
+            //var measurementsVM = measurements.Select(x => _mapper.Map<MeasurementData, MeasurementDataViewModel>(x));
+            viewModel = new LineChartVM()
             {
-                return StatusCode(500);
-            }
+                ChartHeight = resultHeight,
+                ChartWidth = resultWidth,
+                Data = filteredMesurments.ToList()
+            };
             return PartialView(viewModel);
         }
 
@@ -142,23 +108,16 @@ namespace PortalDataPresentation.Controllers
         public async Task<IActionResult> PostMeasurements(PostMeasurementsVM measurementVM)
         {
             MeasurementData measurement;
-            try
+            measurement = new MeasurementData()
             {
-                measurement = new MeasurementData()
-                {
-                    DataType = _dataTypesRepo.SearchBy(dt => dt.Name == measurementVM.DataTypeName).FirstOrDefault(),
-                    Instalation = _instalationsRepo.SearchBy(i => i.Name == measurementVM.InstalationName).FirstOrDefault(),
-                    Location = _locationsRepo.SearchBy(l => l.Name == measurementVM.LocationName).FirstOrDefault(),
-                    MeasurmentDate = DateTime.UtcNow,
-                    Value = double.Parse(measurementVM.Value.Replace('.', ','))
-                };
+                DataType = _dataTypesRepo.SearchBy(dt => dt.Name == measurementVM.DataTypeName).FirstOrDefault(),
+                Instalation = _instalationsRepo.SearchBy(i => i.Name == measurementVM.InstalationName).FirstOrDefault(),
+                Location = _locationsRepo.SearchBy(l => l.Name == measurementVM.LocationName).FirstOrDefault(),
+                MeasurmentDate = DateTime.UtcNow,
+                Value = double.Parse(measurementVM.Value.Replace('.', ','))
+            };
 
-                await _measurementsRepo.AddAsync(measurement);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            await _measurementsRepo.AddAsync(measurement);
             return RedirectToAction(nameof(Index));
         }
     }

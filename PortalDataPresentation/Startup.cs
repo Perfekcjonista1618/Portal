@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PortalData.Services;
 using PortalDataPresentation.DAL;
 
 namespace PortalDataPresentation
@@ -26,6 +27,8 @@ namespace PortalDataPresentation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IAnalysisable, AnalysisService>();
+
             services.AddDbContext<PortalContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc();
@@ -52,10 +55,10 @@ namespace PortalDataPresentation
 
             app.UseMvc(routes =>
             {
-                //MeasurementDatas/MapLocation
+                //MeasurementDatas/MapLocation  {controller=Home}/{action=Index}
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=MeasurementDatas}/{action=MapLocation}/{id?}");
+                    template: "portal/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

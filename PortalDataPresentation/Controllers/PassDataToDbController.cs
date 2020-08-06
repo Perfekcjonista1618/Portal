@@ -20,28 +20,19 @@ namespace PortalDataPresentation.Controllers
         {
             _ReceivedMeasurementRepo = new EfRepository<ReceivedMeasurement>(context);
         }
-        // GET: PassDataToDb
         [HttpPost]
         public async Task<IActionResult> Index([FromBody] ReceivedMeasurementVM MeasurementVM)
         {
-            try
+            var Measurement = new ReceivedMeasurement
             {
+                DataTypeKeyName = MeasurementVM.DataTypeKeyName,
+                Value = MeasurementVM.Value
+            };
+            await _ReceivedMeasurementRepo.AddAsync(Measurement);
 
-                var Measurement = new ReceivedMeasurement
-                {
-                    DataTypeKeyName = MeasurementVM.DataTypeKeyName,
-                    Value = MeasurementVM.Value
-                };
-                await _ReceivedMeasurementRepo.AddAsync(Measurement);
-
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
             return Ok();
         }
-
+        [HttpGet]
         public JsonResult GetData()
         {
             var measurements = _ReceivedMeasurementRepo.Get().OrderByDescending(x => x.RecordCreateTime).Take(100).ToList();
