@@ -18,20 +18,20 @@
     </div>
 
     @*<input type="button" value="Analyze" onclick="@("window.location.href='" + @Url.Action("Analyze", "MeasurementDatas", Model) + "'");" />*@
-
-    <button type="button" id="btnAnalyze" class="btn btn-primary">Analyze</button>
-
-
+    <p>
+        <label>Wynik: </label>
+        <label id="lblResult"></label>
+    </p>
+    <button type="button" id="btnAnalyze" class="btn btn-primary">Average</button>
 
 </body>
 </html>
-@*data: {measurements: @Json.Serialize(Model.Data), operation: 'Average'},*@
+ @*document.getElementById('lblResult').innerHTML = 'your tip has been submitted!';*@
 <script type="text/javascript">
     var p = document.getElementById("btnAnalyze");
+    var r = document.getElementById("lblResult");
+
     p.onclick = passDataToAnalysis;
-    @*
-    , operation: "Average"    
-    *@
     function passDataToAnalysis() {
         $.ajax({
             type: 'POST',
@@ -39,15 +39,12 @@
             url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Average"})',
             dataType: 'JSON',
             data: JSON.stringify(@Json.Serialize(Model.Data)),
-            success: function(result) {
-                alert(result.result);
+            success: function (result) {
+                r.innerHTML = result.result;
             },
             error: function(e) {
                 alert(e);
             }
         });
-        @*$.post('@Url.Action("Analyze", "AnalysisComputation")', {measurements: @Json.Serialize(Model.Data), operation:'Average'}).done(function(response){
-            alert("success");
-        });*@
     }
 </script>

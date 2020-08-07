@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PortalData.Models;
+using PortalData.Services.AnalysisComponents;
 using PortalData.Services.Enums;
 
 namespace PortalData.Services
@@ -28,16 +29,18 @@ namespace PortalData.Services
             switch (computation)
             {
                 case Operation.Average :
-                    Result = CountAverage(measurements);
+                    Result = CountAverage(measurements, new AverageComponent());
                     break;
             }
 
             return Result;
         }
 
-        public double CountAverage(List<ReceivedMeasurement> measurements)
+        public double CountAverage(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)
         {
-            return 3.12;
+            analyzeComponent.Analyze(measurements);
+            var result = analyzeComponent.GetResult();
+            return result;
         }
     }
 }

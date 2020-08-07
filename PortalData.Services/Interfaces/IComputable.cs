@@ -7,7 +7,7 @@ namespace PortalData.Services
 {
     public interface IComputable
     {
-        void Analyze();
-        void GetData(List<ReceivedMeasurement> measurements);
+        void Analyze(List<ReceivedMeasurement> measurements);
+        double GetResult();
     }
 }

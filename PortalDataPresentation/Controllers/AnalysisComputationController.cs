@@ -18,15 +18,14 @@ namespace PortalDataPresentation.Controllers
         {
             _analysisService = analysisService;
         }
-        //, string operation  List<ReceivedMeasurement> [FromBody]
         [HttpPost]
         public JsonResult Analyze([FromBody] List<ReceivedMeasurement> measurements, string operation = null)
         {
             if (measurements != null)
             {
-               // var result = _analysisService.Compute(measurements, operation);
+                var result = _analysisService.Compute(measurements, operation);
 
-                return Json(new { success = true, result = "gowno" });
+                return Json(new { success = true, result = result });
             }
             else
                 return Json(new { success = false, result = "gowno" });
