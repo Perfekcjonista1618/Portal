@@ -60,13 +60,18 @@ namespace PortalData.Services
             return DbSet.Single(predicate);
         }
 
-        public async Task <IQueryable<T>> GetAllAsync(params Expression<Func<T,object>>[] navigationPropertyPath)
+        public IQueryable<T> GetAllAsync()
         {
-            IQueryable<T> result = DbSet;
-            foreach (var set in navigationPropertyPath)
-                result= result.Include(set);
+            //async Task <IQueryable<T>>
 
-            return result;
+            //params Expression<Func<T,object>>[] navigationPropertyPath
+
+            //IQueryable<T> result = DbSet;
+            //foreach (var set in navigationPropertyPath)
+            //    result= result.Include(set);
+
+            //return result;
+            return DbSet;
 
             //return DbSet.Include(navigationPropertyPath[0]).Include(navigationPropertyPath[1]).Include(navigationPropertyPath[2]);
 ;        }

@@ -15,7 +15,9 @@ namespace PortalData.Services
         IQueryable<T> SearchBy(Expression<Func<T, bool>> predicate);
         T First();
         T Single(Expression<Func<T, bool>> predicate);
-        Task<IQueryable<T>> GetAllAsync(params Expression<Func<T, object>>[] navigatrionPropertyPath);
+
+        IQueryable<T> GetAllAsync();
+        //Task<IQueryable<T>> GetAllAsync(params Expression<Func<T, object>>[] navigatrionPropertyPath);
         IQueryable<T> Include(Expression<Func<T, object>> set, Expression<Func<T, bool>> criteria);
     }
 }

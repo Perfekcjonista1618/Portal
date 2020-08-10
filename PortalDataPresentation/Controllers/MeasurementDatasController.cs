@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PortalData.Models;
@@ -34,19 +35,30 @@ namespace PortalDataPresentation.Controllers
         public async Task<IActionResult> Index(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, int? resultWidth, int? resultHeight)
         {
             IQueryable<ReceivedMeasurement> measurements;
-            IQueryable<MeasurementDataViewModel> measurementsVM;
             LineChartVM viewModel;
 
             if (!string.IsNullOrWhiteSpace(dataTypeName))
                 measurements = _receivedMeasurementsRepo
-                               .SearchBy(x => x.DataTypeKeyName == dataTypeName);
+                    .SearchBy(x => x.DataTypeKeyName == dataTypeName);
             else
-                measurements = _receivedMeasurementsRepo.SearchBy(x => x.DataTypeKeyName == "Temperature");
+            {
+                measurements = _receivedMeasurementsRepo.GetAllAsync();
+                dataTypeName = "All";
+            }
+
+            if (minDate != null)
+                measurements = measurements.Where(m => m.RecordCreateTime > minDate);
+
+            if (maxDate != null)
+                measurements = measurements.Where(m => m.RecordCreateTime < maxDate);
 
             viewModel = new LineChartVM()
             {
                 ChartHeight = resultHeight,
                 ChartWidth = resultWidth,
+                dataTypeName = dataTypeName,
+                minDate = minDate ?? DateTime.MinValue,
+                maxDate = maxDate ?? DateTime.MaxValue,
                 Data = measurements.ToList()
             };
 
@@ -80,7 +92,6 @@ namespace PortalDataPresentation.Controllers
             if (maxDate.HasValue)
                 filteredMesurments = filteredMesurments.Where(r => r.RecordCreateTime <= maxDate);
 
-            //var measurementsVM = measurements.Select(x => _mapper.Map<MeasurementData, MeasurementDataViewModel>(x));
             viewModel = new LineChartVM()
             {
                 ChartHeight = resultHeight,
@@ -89,7 +100,17 @@ namespace PortalDataPresentation.Controllers
             };
             return PartialView(viewModel);
         }
+        //public IActionResult Csv()
+        //{
+        //    var builder = new StringBuilder();
+        //    builder.AppendLine("Id,Username");
+        //    foreach (var user in users)
+        //    {
+        //        builder.AppendLine($"{user.Id},{user.Username}");
+        //    }
 
+        //    return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "users.csv");
+        //}
         public async Task<PartialViewResult> MapLocation()
         {
             return PartialView();

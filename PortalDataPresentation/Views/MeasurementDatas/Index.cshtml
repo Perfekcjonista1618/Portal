@@ -7,31 +7,66 @@
 }
 <br />
 <br />
+
 <body>
-    <h2>Measurements for @Model.Data.First().DataTypeKeyName</h2>
+    <div>
+        <h2>Measurements for @Model.dataTypeName</h2>
+        <div class="md-form">
+            <form asp-controller="MeasurementDatas" asp-action="Index" method="get">
+                <table>
+                    <tr>
+                        <td>
+                            <label>Data type: </label>
+                        </td>
+                        <td>
+                            <label>Date from: </label>
 
-    <div class="col-md-6; col-lg-12">
-        @await Html.PartialAsync("RefreshTable", Model.Data)
+                        </td>
+                        <td>
+                            <label>Date to: </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select asp-for="dataTypeName" asp-items="Model.dataTypeNames" class="form-control"></select>
+                        </td>
+                        <td>
+                            <input asp-for="minDate" value="@Model.minDate.ToString("yyyy-MM-dd")" asp-format="{0:yyyy-mm-dd}" type="date" class="form-control" />
+                        </td>
+                        <td>
+                            <input asp-for="maxDate" value="@Model.maxDate.ToString("yyyy-MM-dd")" asp-format="{0:yyyy-mm-dd}" type="date" class="form-control" />
+                        </td>
+                    </tr>
+                </table>
+                <br /><button class="btn btn-primary" type="submit">Filter</button>
+            </form>
+
+            @*<form asp-controller="MeasurementDatas" asp-action="DownloadCsv" method="get">
+                <button class="btn btn-success" id="btnDownloadCSV" type="submit">Download CSV</button>
+            </form>*@
+        </div>
+        <div class="col-md-6; col-lg-12">
+            @await Html.PartialAsync("RefreshTable", Model.Data)
+        </div>
+        <div class="col-md-6; col-lg-12">
+            @await Html.PartialAsync("LineChart", Model)
+        </div>
+        @*<input type="button" value="Analyze" onclick="@("window.location.href='" + @Url.Action("Analyze", "MeasurementDatas", Model) + "'");" />*@
+        <p>
+            <label>Wynik: </label>
+            <label id="lblResult"></label>
+        </p>
+        <button type="button" id="btnAnalyze" class="btn btn-primary">Average</button>
     </div>
-    <div class="col-md-6; col-lg-12">
-        @await Html.PartialAsync("LineChart", Model)
-    </div>
-
-    @*<input type="button" value="Analyze" onclick="@("window.location.href='" + @Url.Action("Analyze", "MeasurementDatas", Model) + "'");" />*@
-    <p>
-        <label>Wynik: </label>
-        <label id="lblResult"></label>
-    </p>
-    <button type="button" id="btnAnalyze" class="btn btn-primary">Average</button>
-
 </body>
 </html>
- @*document.getElementById('lblResult').innerHTML = 'your tip has been submitted!';*@
 <script type="text/javascript">
-    var p = document.getElementById("btnAnalyze");
-    var r = document.getElementById("lblResult");
 
-    p.onclick = passDataToAnalysis;
+    var btnAnalyze = document.getElementById("btnAnalyze");
+    var lblResult = document.getElementById("lblResult");
+
+    btnAnalyze.onclick = passDataToAnalysis;
+
     function passDataToAnalysis() {
         $.ajax({
             type: 'POST',
@@ -40,7 +75,7 @@
             dataType: 'JSON',
             data: JSON.stringify(@Json.Serialize(Model.Data)),
             success: function (result) {
-                r.innerHTML = result.result;
+                lblResult.innerHTML = result.result;
             },
             error: function(e) {
                 alert(e);
