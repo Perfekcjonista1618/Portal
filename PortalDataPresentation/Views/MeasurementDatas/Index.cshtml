@@ -20,7 +20,6 @@
                         </td>
                         <td>
                             <label>Date from: </label>
-
                         </td>
                         <td>
                             <label>Date to: </label>
@@ -41,9 +40,12 @@
                 <br /><button class="btn btn-primary" type="submit">Filter</button>
             </form>
 
-            @*<form asp-controller="MeasurementDatas" asp-action="DownloadCsv" method="get">
+            <form asp-controller="MeasurementDatas" asp-action="DownloadCsv" method="get">
+                <input asp-for="dataTypeName" type="hidden" value="@Model.dataTypeName" />
+                <input asp-for="minDate" type="hidden" value="@Model.minDate" />
+                <input asp-for="maxDate" type="hidden" value="@Model.maxDate" />
                 <button class="btn btn-success" id="btnDownloadCSV" type="submit">Download CSV</button>
-            </form>*@
+            </form>
         </div>
         <div class="col-md-6; col-lg-12">
             @await Html.PartialAsync("RefreshTable", Model.Data)

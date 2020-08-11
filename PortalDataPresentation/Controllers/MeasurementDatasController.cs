@@ -100,17 +100,29 @@ namespace PortalDataPresentation.Controllers
             };
             return PartialView(viewModel);
         }
-        //public IActionResult Csv()
-        //{
-        //    var builder = new StringBuilder();
-        //    builder.AppendLine("Id,Username");
-        //    foreach (var user in users)
-        //    {
-        //        builder.AppendLine($"{user.Id},{user.Username}");
-        //    }
+        public IActionResult DownloadCsv(string dataTypeName, DateTime? minDate, DateTime? maxDate)
+        {
+            IQueryable<ReceivedMeasurement> measurements;
 
-        //    return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "users.csv");
-        //}
+            if (!string.IsNullOrWhiteSpace(dataTypeName))
+                measurements = _receivedMeasurementsRepo
+                    .SearchBy(x => x.DataTypeKeyName == dataTypeName);
+            else
+                measurements = _receivedMeasurementsRepo.GetAllAsync();
+
+            if (minDate != null && minDate != DateTime.MinValue)
+                measurements = measurements.Where(m => m.RecordCreateTime > minDate);
+
+            if (maxDate != null && maxDate != DateTime.MaxValue)
+                measurements = measurements.Where(m => m.RecordCreateTime < maxDate);
+
+            var builder = new StringBuilder();
+            builder.AppendLine("ID,\"Measurement type\",\"Value\",\"Measurement date\"");
+
+            foreach (var measurement in measurements)
+                builder.AppendLine($"{measurement.ID},\"{measurement.DataTypeKeyName}\",\"{measurement.Value}\",\"{measurement.RecordCreateTime}\"");
+            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Measurements.csv");
+        }
         public async Task<PartialViewResult> MapLocation()
         {
             return PartialView();
