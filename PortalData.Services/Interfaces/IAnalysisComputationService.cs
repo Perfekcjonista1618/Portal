@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json.Bson;
+﻿using System.Collections.Generic;
 using PortalData.Models;
 
 namespace PortalData.Services
 {
-    public interface IAnalysisable
+    public interface IAnalysisComputationService
     {
         double Compute(List<ReceivedMeasurement> measurements, string operation);
     }

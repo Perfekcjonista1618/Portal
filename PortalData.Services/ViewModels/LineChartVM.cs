@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PortalData.Models;
 
@@ -17,7 +16,7 @@ namespace PortalDataPresentation.ViewModels
 
         public List<SelectListItem> dataTypeNames { get; } = new List<SelectListItem>
         {
-            new SelectListItem { Value = "All", Text = String.Empty },
+            new SelectListItem { Value = String.Empty, Text = "All"},
             new SelectListItem { Value = "Temperature", Text = "Temperature" },
             new SelectListItem { Value = "Humidity", Text = "Humidity" },
             new SelectListItem { Value = "Photoresistor", Text = "Photoresistor"  },

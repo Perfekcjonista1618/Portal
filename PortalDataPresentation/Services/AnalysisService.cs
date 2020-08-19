@@ -8,7 +8,7 @@ using PortalData.Services.Enums;
 
 namespace PortalData.Services
 {
-    public class AnalysisService : IAnalysisable
+    public class AnalysisService : IAnalysisComputationService
     {
         public List<ReceivedMeasurement> _measurements { get; set; }
         public double Result { get; set; }

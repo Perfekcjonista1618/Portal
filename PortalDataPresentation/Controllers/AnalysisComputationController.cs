@@ -13,8 +13,8 @@ namespace PortalDataPresentation.Controllers
     [Produces("application/json")]
     public class AnalysisComputationController : Controller
     {
-        private readonly IAnalysisable _analysisService;
-        public AnalysisComputationController(IAnalysisable analysisService)
+        private readonly IAnalysisComputationService _analysisService;
+        public AnalysisComputationController(IAnalysisComputationService analysisService)
         {
             _analysisService = analysisService;
         }
