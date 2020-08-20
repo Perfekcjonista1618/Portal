@@ -7,7 +7,10 @@
 }
 <br />
 <br />
-
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="main.js"></script>
+</head>
 <body>
     <div>
         <h2>Measurements for @Model.dataTypeName</h2>
@@ -54,6 +57,8 @@
             @await Html.PartialAsync("LineChart", Model)
         </div>
         @*<input type="button" value="Analyze" onclick="@("window.location.href='" + @Url.Action("Analyze", "MeasurementDatas", Model) + "'");" />*@
+
+        <canvas id="myChart2" width="200" height="200"></canvas>
         <p>
             <label>Wynik: </label>
             <label id="lblResult"></label>
@@ -76,12 +81,51 @@
             url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Average"})',
             dataType: 'JSON',
             data: JSON.stringify(@Json.Serialize(Model.Data)),
-            success: function (result) {
-                lblResult.innerHTML = result.result;
+            success: function(result) {
+                //lblResult.innerHTML = result.result;
+                drawChart(result.result);
             },
             error: function(e) {
                 alert(e);
             }
         });
+    }
+
+    function drawChart(result) {
+        var data = [result];  
+        var ctx = document.getElementById("myChart2").getContext('2d');
+        var myChart = new Chart(ctx,
+            {
+                type: 'bar',
+                data: {
+                    labels: ['Red'],
+                    datasets: [
+                        {
+                            label: ['Wartosc'],
+                            data: data,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.4)',
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 0.4)'
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
     }
 </script>
