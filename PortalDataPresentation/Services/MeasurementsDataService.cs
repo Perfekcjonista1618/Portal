@@ -42,8 +42,7 @@ namespace PortalData.Services
 
         public LineChartVM CreateViewModel(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, IQueryable<ReceivedMeasurement> measurements, int? resultWidth, int? resultHeight)
         {
-            LineChartVM viewModel = null;
-            viewModel = new LineChartVM()
+            LineChartVM viewModel = new LineChartVM()
             {
                 ChartHeight = resultHeight,
                 ChartWidth = resultWidth,

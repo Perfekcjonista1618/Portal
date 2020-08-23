@@ -12,15 +12,6 @@ namespace PortalData.Services
     {
         public List<ReceivedMeasurement> _measurements { get; set; }
         public double Result { get; set; }
-        public void Analyze()
-        {
-            Result = _measurements.Sum(m => m.Value) / _measurements.Count;
-        }
-
-        public void GetData(List<ReceivedMeasurement> measurements)
-        {
-            _measurements = measurements;
-        }
 
         public double Compute(List<ReceivedMeasurement> measurements, string operation)
         {
@@ -31,9 +22,19 @@ namespace PortalData.Services
                 case Operation.Average :
                     Result = CountAverage(measurements, new AverageComponent());
                     break;
+                case Operation.Max:
+                    Result = CountMax(measurements, new MaxComponent());
+                    break;
             }
 
             return Result;
+        }
+
+        private double CountMax(List<ReceivedMeasurement> measurements, MaxComponent analyzeComponent)
+        {
+            analyzeComponent.Analyze(measurements);
+            var result = analyzeComponent.GetResult();
+            return result;
         }
 
         public double CountAverage(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)

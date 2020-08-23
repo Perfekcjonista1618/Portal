@@ -3,6 +3,7 @@
     public enum Operation
     {
         Average,
+        Max,
 
     }
 }

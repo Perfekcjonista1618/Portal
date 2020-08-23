@@ -1,9 +1,11 @@
 ﻿<html>
+@using PortalDataPresentation.Controllers
 @model PortalDataPresentation.ViewModels.LineChartVM
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 <br />
 <br />
@@ -11,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="main.js"></script>
 </head>
+
 <body>
     <div>
         <h2>Measurements for @Model.dataTypeName</h2>
@@ -63,26 +66,50 @@
             <label>Wynik: </label>
             <label id="lblResult"></label>
         </p>
-        <button type="button" id="btnAnalyze" class="btn btn-primary">Average</button>
+        <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
+        <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
+
     </div>
 </body>
 </html>
-<script type="text/javascript">
 
-    var btnAnalyze = document.getElementById("btnAnalyze");
-    var lblResult = document.getElementById("lblResult");
+<script type="text/javascript"></script>
+<script>
 
-    btnAnalyze.onclick = passDataToAnalysis;
+    var btnAverage = document.getElementById("btnAverage");
+    var btnMax = document.getElementById("btnMax");
 
-    function passDataToAnalysis() {
+    btnAverage.addEventListener('click', function(){
+        passDataToCountAverage();
+    });
+
+    btnMax.addEventListener('click', function(){
+        passDataToCountMax();
+    });
+    
+    function passDataToCountAverage() {
         $.ajax({
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
             url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Average"})',
             dataType: 'JSON',
-            data: JSON.stringify(@Json.Serialize(Model.Data)),
+            data: JSON.stringify(@Json.Serialize(@Model)),
             success: function(result) {
-                //lblResult.innerHTML = result.result;
+                drawChart(result.result);
+            },
+            error: function(e) {
+                alert(e);
+            }
+        });
+    }
+    function passDataToCountMax() {
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Max"})',
+            dataType: 'JSON',
+            data: JSON.stringify(@Json.Serialize(@Model)),
+            success: function(result) {
                 drawChart(result.result);
             },
             error: function(e) {
@@ -92,13 +119,13 @@
     }
 
     function drawChart(result) {
-        var data = [result];  
+        var data = [result];
         var ctx = document.getElementById("myChart2").getContext('2d');
         var myChart = new Chart(ctx,
             {
                 type: 'bar',
                 data: {
-                    labels: ['Red'],
+                    labels: ['Wynik'],
                     datasets: [
                         {
                             label: ['Wartosc'],
