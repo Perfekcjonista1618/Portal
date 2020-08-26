@@ -38,6 +38,5 @@ namespace PortalDataPresentation.Controllers
             var measurements = _ReceivedMeasurementRepo.Get().OrderByDescending(x => x.RecordCreateTime).Take(100).ToList();
             return Json(measurements);
         }
-
     }
 }

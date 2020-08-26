@@ -59,13 +59,9 @@
         <div class="col-md-6; col-lg-12">
             @await Html.PartialAsync("LineChart", Model)
         </div>
-        @*<input type="button" value="Analyze" onclick="@("window.location.href='" + @Url.Action("Analyze", "MeasurementDatas", Model) + "'");" />*@
 
         <canvas id="myChart2" width="200" height="200"></canvas>
-        <p>
-            <label>Wynik: </label>
-            <label id="lblResult"></label>
-        </p>
+
         <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
         <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
 
@@ -79,21 +75,30 @@
     var btnAverage = document.getElementById("btnAverage");
     var btnMax = document.getElementById("btnMax");
 
-    btnAverage.addEventListener('click', function(){
-        passDataToCountAverage();
-    });
+    btnAverage.addEventListener('click',
+        function() {
+            passDataToAnalysis("Average");
+        });
 
-    btnMax.addEventListener('click', function(){
-        passDataToCountMax();
-    });
-    
-    function passDataToCountAverage() {
+    btnMax.addEventListener('click',
+        function() {
+            passDataToAnalysis("Max");
+        });
+
+    function passDataToAnalysis(operation) {
+        var data = {
+            "minDate": "@Model.minDate",
+            "maxDate": "@Model.maxDate",
+            "dataTypeName": "@Model.dataTypeName",
+            "operation": operation
+        };
+
         $.ajax({
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
-            url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Average"})',
+            url: '@Url.Action("Analyze", "AnalysisComputation")' ,
             dataType: 'JSON',
-            data: JSON.stringify(@Json.Serialize(@Model)),
+            data: JSON.stringify(data),
             success: function(result) {
                 drawChart(result.result);
             },
@@ -102,22 +107,6 @@
             }
         });
     }
-    function passDataToCountMax() {
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            url: '@Url.Action("Analyze", "AnalysisComputation", new {operation = "Max"})',
-            dataType: 'JSON',
-            data: JSON.stringify(@Json.Serialize(@Model)),
-            success: function(result) {
-                drawChart(result.result);
-            },
-            error: function(e) {
-                alert(e);
-            }
-        });
-    }
-
     function drawChart(result) {
         var data = [result];
         var ctx = document.getElementById("myChart2").getContext('2d');

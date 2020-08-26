@@ -21,24 +21,29 @@ namespace PortalDataPresentation.Controllers
             _analysisService = analysisService;
             _measurementsDataService = measurementsDataService;
         }
-       [HttpPost]
-        public JsonResult Analyze([FromBody] LineChartVM viewmodel, string operation)
+        [HttpPost]
+        public JsonResult Analyze([FromBody] AnalysisVM viewmodel)
         {
-            List<ReceivedMeasurement> measurements;
-            if (viewmodel.dataTypeName.Equals("All"))
-                viewmodel.dataTypeName = null;
-
-            measurements =
-                _measurementsDataService.ExtractData(null, viewmodel.dataTypeName, viewmodel.minDate, viewmodel.maxDate, null, null).ToList();
-
-            if (measurements != null && measurements.Count > 0)
+            if (viewmodel != null)
             {
-                var result = _analysisService.Compute(measurements, operation);
+                List<ReceivedMeasurement> measurements;
+                if (viewmodel.dataTypeName.Equals("All"))
+                    viewmodel.dataTypeName = null;
 
-                return Json(new { success = true, result = result });
+                measurements =
+                    _measurementsDataService.ExtractData(null, viewmodel.dataTypeName, DateTime.Parse(viewmodel.minDate), DateTime.Parse(viewmodel.maxDate), null, null).ToList();
+
+                if (measurements.Count > 0)
+                {
+                    var result = _analysisService.Compute(measurements, viewmodel.operation);
+
+                    return Json(new { success = true, result = result });
+                }
+                else
+                    return Json(new { success = false, result = "Selected conditions match no data" }); 
             }
             else
-                return Json(new { success = false, result = "Selected conditions match no data" });
+                return Json(new { success = false, result = "No data sent to server" });
         }
     }
 }
