@@ -5,39 +5,36 @@ using System.Text;
 using PortalData.Models;
 using PortalData.Services.AnalysisComponents;
 using PortalData.Services.Enums;
+using PortalDataPresentation.ViewModels;
 
 namespace PortalData.Services
 {
     public class AnalysisService : IAnalysisComputationService
     {
         public List<ReceivedMeasurement> _measurements { get; set; }
-        public List<double> Result { get; set; }
+        public ComputationResultVM Result { get; set; }
 
-        public List<double> Compute(List<ReceivedMeasurement> measurements, string operation)
+        public ComputationResultVM Compute(List<ReceivedMeasurement> measurements, string operation)
         {
             Operation computation = (Operation)Enum.Parse(typeof(Operation), operation);
 
             switch (computation)
             {
                 case Operation.Average :
-                    Result = CountAverage(measurements, new AverageComponent());
+                    Result = Count(measurements, new AverageComponent());
                     break;
                 case Operation.Max:
-                    Result = CountMax(measurements, new MaxComponent());
+                    Result = Count(measurements, new MaxComponent());
+                    break;
+                case Operation.Trend:
+                    Result = Count(measurements, new TrendComponent());
                     break;
             }
 
             return Result;
         }
 
-        private List<double> CountMax(List<ReceivedMeasurement> measurements, MaxComponent analyzeComponent)
-        {
-            analyzeComponent.Analyze(measurements);
-            var result = analyzeComponent.GetResult();
-            return result;
-        }
-
-        public List<double>  CountAverage(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)
+        public ComputationResultVM Count(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)
         {
             analyzeComponent.Analyze(measurements);
             var result = analyzeComponent.GetResult();

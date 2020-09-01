@@ -4,6 +4,6 @@
     {
         Average,
         Max,
-
+        Trend,
     }
 }

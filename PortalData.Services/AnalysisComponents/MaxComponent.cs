@@ -3,21 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PortalData.Models;
+using PortalDataPresentation.ViewModels;
 
 namespace PortalData.Services.AnalysisComponents
 {
     public class MaxComponent : IComputable
     {
-        private List<double> _result { get; set; }
+        private ComputationResultVM _result { get; set; }
         public void Analyze(List<ReceivedMeasurement> measurements)
         {
-            _result = new List<double>(new[]
+            _result = new ComputationResultVM()
             {
-                measurements.Max(m => m.Value)
-            });
+                X_values = new List<string>(new[]
+                {
+                    "Wynik"
+                }),
+                Y_values = new List<double>(new[]
+                {
+                    measurements.Max(m => m.Value)
+                })
+            };
         }
 
-        public List<double> GetResult()
+        public ComputationResultVM GetResult()
         {
             return _result;
         }

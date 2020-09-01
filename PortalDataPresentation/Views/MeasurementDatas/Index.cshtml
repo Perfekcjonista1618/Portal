@@ -64,6 +64,7 @@
 
         <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
         <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
+        <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
 
     </div>
 </body>
@@ -74,18 +75,24 @@
 
     var btnAverage = document.getElementById("btnAverage");
     var btnMax = document.getElementById("btnMax");
+    var btnTrend = document.getElementById("btnTrend");
 
     btnAverage.addEventListener('click',
         function() {
-            passDataToAnalysis("Average");
+            passDataToAnalysis("Average",'bar');
         });
 
     btnMax.addEventListener('click',
         function() {
-            passDataToAnalysis("Max");
+            passDataToAnalysis("Max",'bar');
         });
 
-    function passDataToAnalysis(operation) {
+    btnTrend.addEventListener('click',
+        function() {
+            passDataToAnalysis("Trend",'line');
+        });
+
+    function passDataToAnalysis(operation, chartType) {
         var data = {
             "minDate": "@Model.minDate",
             "maxDate": "@Model.maxDate",
@@ -100,25 +107,24 @@
             dataType: 'JSON',
             data: JSON.stringify(data),
             success: function(response) {
-                drawChart(response.result);
+                drawChart(response.labels, response.result, chartType);
             },
             error: function(e) {
                 alert(e);
             }
         });
     }
-    function drawChart(result) {
-        var data = [result];
+    function drawChart(labels, result, chartType) {
         var ctx = document.getElementById("myChart2").getContext('2d');
         var myChart = new Chart(ctx,
             {
-                type: 'bar',
+                type: chartType,
                 data: {
-                    labels: ['Wynik'],
+                    labels: labels,
                     datasets: [
                         {
                             label: ['Wartość'],
-                            data: data,
+                            data: result,
                             backgroundColor: [
                                 'rgba(75, 192, 192, 0.4)',
                             ],

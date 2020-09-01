@@ -1,26 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Localization.Internal;
 using PortalData.Models;
 using PortalDataPresentation.ViewModels;
 
 namespace PortalData.Services.AnalysisComponents
 {
-    public class AverageComponent :IComputable
+    public class TrendComponent : IComputable
     {
         private ComputationResultVM _result { get; set; }
-
         public void Analyze(List<ReceivedMeasurement> measurements)
         {
+            var topMeasurements = measurements.Take(3);
             _result = new ComputationResultVM()
             {
-                X_values = new List<string>(new[]
-                {
-                    "Wynik"
-                }),
-                Y_values = new List<double>(new[]
-                {
-                    measurements.Sum(m => m.Value) / measurements.Count
-                })
+                X_values = topMeasurements.Select(d => d.RecordCreateTime.ToString("yyyy-MM-dd")).ToList(),
+                Y_values = topMeasurements.Select(v => v.Value).ToList()
             };
         }
 

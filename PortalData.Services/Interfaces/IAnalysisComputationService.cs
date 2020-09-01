@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using PortalData.Models;
+using PortalDataPresentation.ViewModels;
 
 namespace PortalData.Services
 {
     public interface IAnalysisComputationService
     {
-        List<double> Compute(List<ReceivedMeasurement> measurements, string operation);
+        ComputationResultVM Compute(List<ReceivedMeasurement> measurements, string operation);
     }
 }
