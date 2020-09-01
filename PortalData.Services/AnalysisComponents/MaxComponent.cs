@@ -8,10 +8,13 @@ namespace PortalData.Services.AnalysisComponents
 {
     public class MaxComponent : IComputable
     {
-        private List<double> _result = new List<double>();
+        private List<double> _result { get; set; }
         public void Analyze(List<ReceivedMeasurement> measurements)
         {
-            _result.Add( measurements.Max(m => m.Value));
+            _result = new List<double>(new[]
+            {
+                measurements.Max(m => m.Value)
+            });
         }
 
         public List<double> GetResult()
