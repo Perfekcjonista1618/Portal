@@ -8,6 +8,6 @@ namespace PortalData.Services
     public interface IComputable
     {
         void Analyze(List<ReceivedMeasurement> measurements);
-        double GetResult();
+        List<double> GetResult();
     }
 }

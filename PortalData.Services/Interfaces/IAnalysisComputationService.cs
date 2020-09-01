@@ -5,6 +5,6 @@ namespace PortalData.Services
 {
     public interface IAnalysisComputationService
     {
-        double Compute(List<ReceivedMeasurement> measurements, string operation);
+        List<double> Compute(List<ReceivedMeasurement> measurements, string operation);
     }
 }

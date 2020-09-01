@@ -31,7 +31,8 @@ namespace PortalDataPresentation.Controllers
                     viewmodel.dataTypeName = null;
 
                 measurements =
-                    _measurementsDataService.ExtractData(null, viewmodel.dataTypeName, DateTime.Parse(viewmodel.minDate), DateTime.Parse(viewmodel.maxDate), null, null).ToList();
+                    _measurementsDataService.ExtractData(null, viewmodel.dataTypeName, DateTime.Parse(viewmodel.minDate),
+                        DateTime.Parse(viewmodel.maxDate), null, null).ToList();
 
                 if (measurements.Count > 0)
                 {

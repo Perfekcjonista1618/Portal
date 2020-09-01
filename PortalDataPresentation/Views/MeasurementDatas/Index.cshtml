@@ -99,8 +99,8 @@
             url: '@Url.Action("Analyze", "AnalysisComputation")' ,
             dataType: 'JSON',
             data: JSON.stringify(data),
-            success: function(result) {
-                drawChart(result.result);
+            success: function(response) {
+                drawChart(response.result);
             },
             error: function(e) {
                 alert(e);
@@ -117,7 +117,7 @@
                     labels: ['Wynik'],
                     datasets: [
                         {
-                            label: ['Wartosc'],
+                            label: ['Wartość'],
                             data: data,
                             backgroundColor: [
                                 'rgba(75, 192, 192, 0.4)',

@@ -18,7 +18,7 @@ namespace PortalDataPresentation.Controllers
     {
         private readonly IMeasurementDataService _measurementsDataService;
 
-        public MeasurementDatasController(PortalContext context, IMapper mapper, IMeasurementDataService measurementsDataService)
+        public MeasurementDatasController(IMapper mapper, IMeasurementDataService measurementsDataService)
         {
             _measurementsDataService = measurementsDataService;
         }

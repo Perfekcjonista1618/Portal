@@ -40,7 +40,8 @@ namespace PortalData.Services
             return measurements;
         }
 
-        public LineChartVM CreateViewModel(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, IQueryable<ReceivedMeasurement> measurements, int? resultWidth, int? resultHeight)
+        public LineChartVM CreateViewModel(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, IQueryable<ReceivedMeasurement> measurements,
+            int? resultWidth, int? resultHeight)
         {
             LineChartVM viewModel = new LineChartVM()
             {
@@ -52,6 +53,15 @@ namespace PortalData.Services
                 Data = measurements.ToList()
             };
             return viewModel;
+        }
+        public StringBuilder CreateCsv(IQueryable<ReceivedMeasurement> measurements)
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("ID,\"Measurement type\",\"Value\",\"Measurement date\"");
+
+            foreach (var measurement in measurements)
+                builder.AppendLine($"{measurement.ID},\"{measurement.DataTypeKeyName}\",\"{measurement.Value}\",\"{measurement.RecordCreateTime}\"");
+            return builder;
         }
         public async void AddMeasurement(PostMeasurementsVM measurementVM)
         {
@@ -65,16 +75,6 @@ namespace PortalData.Services
                 Value = double.Parse(measurementVM.Value.Replace('.', ','))
             };
             await _measurementsRepo.AddAsync(measurement);
-        }
-
-        public StringBuilder CreateCsv(IQueryable<ReceivedMeasurement> measurements)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine("ID,\"Measurement type\",\"Value\",\"Measurement date\"");
-
-            foreach (var measurement in measurements)
-                builder.AppendLine($"{measurement.ID},\"{measurement.DataTypeKeyName}\",\"{measurement.Value}\",\"{measurement.RecordCreateTime}\"");
-            return builder;
         }
     }
 }

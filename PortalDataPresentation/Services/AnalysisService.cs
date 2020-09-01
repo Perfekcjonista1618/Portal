@@ -11,9 +11,9 @@ namespace PortalData.Services
     public class AnalysisService : IAnalysisComputationService
     {
         public List<ReceivedMeasurement> _measurements { get; set; }
-        public double Result { get; set; }
+        public List<double> Result { get; set; }
 
-        public double Compute(List<ReceivedMeasurement> measurements, string operation)
+        public List<double> Compute(List<ReceivedMeasurement> measurements, string operation)
         {
             Operation computation = (Operation)Enum.Parse(typeof(Operation), operation);
 
@@ -30,14 +30,14 @@ namespace PortalData.Services
             return Result;
         }
 
-        private double CountMax(List<ReceivedMeasurement> measurements, MaxComponent analyzeComponent)
+        private List<double> CountMax(List<ReceivedMeasurement> measurements, MaxComponent analyzeComponent)
         {
             analyzeComponent.Analyze(measurements);
             var result = analyzeComponent.GetResult();
             return result;
         }
 
-        public double CountAverage(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)
+        public List<double>  CountAverage(List<ReceivedMeasurement> measurements, IComputable analyzeComponent)
         {
             analyzeComponent.Analyze(measurements);
             var result = analyzeComponent.GetResult();
