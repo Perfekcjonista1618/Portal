@@ -36,7 +36,7 @@ namespace PortalDataPresentation.Controllers
 
                 if (measurements.Count > 0)
                 {
-                    var result = _analysisService.Compute(measurements, viewmodel.operation);
+                    var result = _analysisService.Compute(measurements, viewmodel);
 
                     return Json(new { success = true, labels = result.X_values, result = result.Y_values });
                 }

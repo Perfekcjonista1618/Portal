@@ -9,7 +9,7 @@ namespace PortalData.Services.AnalysisComponents
     {
         private ComputationResultVM _result { get; set; }
 
-        public void Analyze(List<ReceivedMeasurement> measurements)
+        public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             _result = new ComputationResultVM()
             {

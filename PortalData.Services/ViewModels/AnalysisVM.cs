@@ -8,5 +8,6 @@ namespace PortalDataPresentation.ViewModels
         public string maxDate { get; set; }
         public string dataTypeName { get; set; }
         public string operation { get; set; }
+        public int polymonialDegree { get; set; }
     }
 }

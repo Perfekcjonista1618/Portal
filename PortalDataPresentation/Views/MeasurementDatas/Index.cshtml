@@ -64,8 +64,11 @@
 
         <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
         <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
-        <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
 
+        <div>
+            <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control" />
+            <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
+        </div>
     </div>
 </body>
 </html>
@@ -76,6 +79,7 @@
     var btnAverage = document.getElementById("btnAverage");
     var btnMax = document.getElementById("btnMax");
     var btnTrend = document.getElementById("btnTrend");
+    var txtTrend = document.getElementById("txtTrend");
 
     btnAverage.addEventListener('click',
         function() {
@@ -88,16 +92,18 @@
         });
 
     btnTrend.addEventListener('click',
-        function() {
-            passDataToAnalysis("Trend",'line');
+        function () {
+            var polymonialDegree = txtTrend.value;
+            passDataToAnalysis("Trend",'line',polymonialDegree);
         });
 
-    function passDataToAnalysis(operation, chartType) {
+    function passDataToAnalysis(operation, chartType, polymonialDegree) {
         var data = {
             "minDate": "@Model.minDate",
             "maxDate": "@Model.maxDate",
             "dataTypeName": "@Model.dataTypeName",
-            "operation": operation
+            "operation": operation,
+            "polymonialDegree": polymonialDegree
         };
 
         $.ajax({

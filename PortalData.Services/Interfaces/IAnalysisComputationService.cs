@@ -6,6 +6,6 @@ namespace PortalData.Services
 {
     public interface IAnalysisComputationService
     {
-        ComputationResultVM Compute(List<ReceivedMeasurement> measurements, string operation);
+        ComputationResultVM Compute(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
     }
 }
