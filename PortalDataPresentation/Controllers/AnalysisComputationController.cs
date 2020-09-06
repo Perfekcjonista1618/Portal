@@ -38,7 +38,7 @@ namespace PortalDataPresentation.Controllers
                 {
                     var result = _analysisService.Compute(measurements, viewmodel);
 
-                    return Json(new { success = true, labels = result.X_values, result = result.Y_values });
+                    return Json(new { success = true, labels = result.X_values, result = result.Y_values, formula = result.Formula });
                 }
                 else
                     return Json(new { success = false, result = "Selected conditions match no data" }); 

@@ -11,8 +11,6 @@ namespace PortalData.Services
 {
     public class AnalysisService : IAnalysisComputationService
     {
-        public ComputationResultVM Result { get; set; }
-
         public ComputationResultVM Compute(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             Operation computation = (Operation)Enum.Parse(typeof(Operation), viewmodel.operation);
@@ -20,23 +18,22 @@ namespace PortalData.Services
             switch (computation)
             {
                 case Operation.Average :
-                    Count(measurements, new AverageComponent(), viewmodel);
-                    break;
+                    return Count(measurements, new AverageComponent(), viewmodel);
                 case Operation.Max:
-                    Count(measurements, new MaxComponent(), viewmodel);
-                    break;
+                    return Count(measurements, new MaxComponent(), viewmodel);
                 case Operation.Trend:
-                    Count(measurements, new TrendComponent(), viewmodel);
-                    break;
+                    return Count(measurements, new TrendComponent(), viewmodel);
+                case Operation.Predict:
+                    return Count(measurements, new PredictionComponent(), viewmodel);
+                default: return new ComputationResultVM();
             }
 
-            return Result;
         }
 
-        private void Count(List<ReceivedMeasurement> measurements, IComputable analyzeComponent, AnalysisVM viewmodel)
+        private ComputationResultVM Count(List<ReceivedMeasurement> measurements, IComputable analyzeComponent, AnalysisVM viewmodel)
         {
             analyzeComponent.Analyze(measurements, viewmodel);
-            Result = analyzeComponent.GetResult();
+            return analyzeComponent.GetResult();
         }
     }
 }

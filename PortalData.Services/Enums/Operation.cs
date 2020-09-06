@@ -5,5 +5,6 @@
         Average,
         Max,
         Trend,
+        Predict,
     }
 }

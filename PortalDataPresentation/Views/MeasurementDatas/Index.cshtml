@@ -60,14 +60,23 @@
             @await Html.PartialAsync("LineChart", Model)
         </div>
 
-        <canvas id="myChart2" width="200" height="200"></canvas>
-
-        <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
-        <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
-
         <div>
-            <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control" />
-            <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
+            <canvas id="myChart2" width="400" height="400"></canvas>
+            <input type="text" readonly="true" id="txtFormula" placeholder="Polymonial formula" class="form-control" />
+        </div>
+        <div style="display: flex; justify-content: space-between; ">
+            <div>
+                <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
+                <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
+            </div>
+            <div style="width: 200px;">
+                <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control" />
+                <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
+            </div>
+            <div style="width: 200px">
+                <input type="date" id="txtPredictionDate" placeholder="Prediction date" class="form-control" />
+                <input type="button" id="btnPredict" value="Predict" class="btn btn-primary" />
+            </div>
         </div>
     </div>
 </body>
@@ -78,8 +87,13 @@
 
     var btnAverage = document.getElementById("btnAverage");
     var btnMax = document.getElementById("btnMax");
+
     var btnTrend = document.getElementById("btnTrend");
     var txtTrend = document.getElementById("txtTrend");
+    var txtFormula = document.getElementById("txtFormula");
+
+    var txtPredictionDate = document.getElementById("txtPredictionDate");
+    var btnPredict = document.getElementById("btnPredict");
 
     btnAverage.addEventListener('click',
         function() {
@@ -97,13 +111,20 @@
             passDataToAnalysis("Trend",'line',polymonialDegree);
         });
 
-    function passDataToAnalysis(operation, chartType, polymonialDegree) {
+    btnPredict.addEventListener('click',
+        function () {
+            var date = txtPredictionDate.value;
+            passDataToAnalysis("Predict", 'bar', txtTrend.value, date);
+        });
+
+    function passDataToAnalysis(operation, chartType, polymonialDegree, predictionDate) {
         var data = {
             "minDate": "@Model.minDate",
             "maxDate": "@Model.maxDate",
             "dataTypeName": "@Model.dataTypeName",
             "operation": operation,
-            "polymonialDegree": polymonialDegree
+            "polynomialDegree": polymonialDegree,
+            "predictionDate": predictionDate,
         };
 
         $.ajax({
@@ -114,6 +135,8 @@
             data: JSON.stringify(data),
             success: function(response) {
                 drawChart(response.labels, response.result, chartType);
+                if (response.formula !== "")
+                    txtFormula.value = response.formula;
             },
             error: function(e) {
                 alert(e);
