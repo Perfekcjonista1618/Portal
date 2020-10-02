@@ -10,5 +10,6 @@ namespace PortalDataPresentation.ViewModels
         public string operation { get; set; }
         public int polynomialDegree { get; set; }
         public string predictionDate { get; set; }
+        public string regressionMethod { get; set; }
     }
 }

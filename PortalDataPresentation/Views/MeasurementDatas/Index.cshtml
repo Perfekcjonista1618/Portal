@@ -60,7 +60,7 @@
             @await Html.PartialAsync("LineChart", Model)
         </div>
 
-        <div>
+        <div id="chart-container">
             <canvas id="myChart2" width="400" height="400"></canvas>
             <input type="text" readonly="true" id="txtFormula" placeholder="Polymonial formula" class="form-control" />
         </div>
@@ -70,8 +70,14 @@
                 <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
             </div>
             <div style="width: 200px;">
-                <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control" />
-                <input type="button" id="btnTrend" value="Trend" class="btn btn-primary" />
+                <label>Regression Method</label>
+                <select class="form-control" id="directRegressionMethod">
+                    <option>QR</option>
+                    <option value="NormalEquations">Normal Equations</option>
+                    <option value="Svd">SVD</option>
+                </select>
+                <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control"/>
+                <input type="button" id="btnTrend" value="Trend" class="btn btn-primary"/>
             </div>
             <div style="width: 200px">
                 <input type="date" id="txtPredictionDate" placeholder="Prediction date" class="form-control" />
@@ -94,6 +100,8 @@
 
     var txtPredictionDate = document.getElementById("txtPredictionDate");
     var btnPredict = document.getElementById("btnPredict");
+
+    var directRegressionMethod = document.getElementById("directRegressionMethod");
 
     btnAverage.addEventListener('click',
         function() {
@@ -125,6 +133,7 @@
             "operation": operation,
             "polynomialDegree": polymonialDegree,
             "predictionDate": predictionDate,
+            "regressionMethod": directRegressionMethod.value
         };
 
         $.ajax({
@@ -144,7 +153,10 @@
         });
     }
     function drawChart(labels, result, chartType) {
+        $('#myChart2').remove(); // this is my <canvas> element
+        $('#chart-container').append('<canvas id="myChart2" width="400" height="400"></canvas>');
         var ctx = document.getElementById("myChart2").getContext('2d');
+        
         var myChart = new Chart(ctx,
             {
                 type: chartType,
@@ -154,6 +166,7 @@
                         {
                             label: ['Wartość'],
                             data: result,
+                            fill: false,
                             backgroundColor: [
                                 'rgba(75, 192, 192, 0.4)',
                             ],
@@ -162,8 +175,9 @@
                             ],
                             borderWidth: 1
                         }
-                    ]
+                    ],
                 },
+
                 options: {
                     responsive: false,
                     maintainAspectRatio: false,

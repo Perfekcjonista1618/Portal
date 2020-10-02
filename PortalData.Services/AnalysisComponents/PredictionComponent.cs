@@ -15,8 +15,10 @@ namespace PortalData.Services.AnalysisComponents
         {
             var dates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();
 
+            DirectRegressionMethod regressionMethod = (DirectRegressionMethod)Enum.Parse(typeof(DirectRegressionMethod), viewmodel.regressionMethod);
+
             var polynomialCoefficients = Fit.Polynomial(dates,
-                measurements.Select(y => y.Value).ToArray(), viewmodel.polynomialDegree, DirectRegressionMethod.QR).ToList();
+                measurements.Select(y => y.Value).ToArray(), viewmodel.polynomialDegree, regressionMethod).ToList();
 
             var predictionDate = DateTime.Parse(viewmodel.predictionDate);
             var predictionResults = GetPredictionResults(predictionDate.ToOADate(), polynomialCoefficients);

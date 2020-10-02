@@ -16,17 +16,20 @@ namespace PortalData.Services.AnalysisComponents
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             var dates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();
-            
+
+            DirectRegressionMethod regressionMethod = (DirectRegressionMethod)Enum.Parse(typeof(DirectRegressionMethod), viewmodel.regressionMethod);
+
             var polynomialCoefficients = Fit.Polynomial(dates,
-                measurements.Select(y => y.Value).ToArray(), viewmodel.polynomialDegree, DirectRegressionMethod.QR).ToList();
+                measurements.Select(y => y.Value).ToArray(), viewmodel.polynomialDegree, regressionMethod).ToList();
 
             var functionFormula = GetFunctionFormula(polynomialCoefficients);
 
             var approximationResults = GetApproximationResults(dates, polynomialCoefficients);
 
+            //measurements.Select(d => d.RecordCreateTime.ToString("yyyy-MM-dd")).ToList(),
             _result = new ComputationResultVM()
             {
-                X_values = measurements.Select(d => d.RecordCreateTime.ToString("yyyy-MM-dd")).ToList(),
+                X_values = dates.Select(x => DateTime.FromOADate(x).ToString("yyyy-MM-dd")).ToList(),
                 Y_values = approximationResults,
                 Formula = functionFormula
             };
