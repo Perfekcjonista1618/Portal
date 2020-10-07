@@ -15,26 +15,29 @@ namespace PortalData.Services.AnalysisComponents
         private ComputationResultVM _result { get; set; }
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
-            var dates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();
+            var measurementDates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();
 
             DirectRegressionMethod regressionMethod = (DirectRegressionMethod)Enum.Parse(typeof(DirectRegressionMethod), viewmodel.regressionMethod);
 
-            var polynomialCoefficients = Fit.Polynomial(dates,
+            var polynomialCoefficients = Fit.Polynomial(measurementDates,
                 measurements.Select(y => y.Value).ToArray(), viewmodel.polynomialDegree, regressionMethod).ToList();
 
-            var functionFormula = GetFunctionFormula(polynomialCoefficients);
+            var functionFormula = GetPolynomialFormula(polynomialCoefficients);
 
-            var approximationResults = GetApproximationResults(dates, polynomialCoefficients);
+            var newDates = GenerateNewDates(measurementDates);
 
-            //measurements.Select(d => d.RecordCreateTime.ToString("yyyy-MM-dd")).ToList(),
+            var approximationResults = GetApproximationResults(newDates.ToArray(), polynomialCoefficients);
+
             _result = new ComputationResultVM()
             {
-                X_values = dates.Select(x => DateTime.FromOADate(x).ToString("yyyy-MM-dd")).ToList(),
+                X_values = measurementDates.Select(x => DateTime.FromOADate(x).ToString("yyyy-MM-dd HH:mm:ss")).ToList(),
+                Y2_values = measurements.Select(x => x.Value).ToList(),
                 Y_values = approximationResults,
                 Formula = functionFormula
             };
         }
-        private string GetFunctionFormula(List<double> polynomialCoefficients)
+
+        private string GetPolynomialFormula(List<double> polynomialCoefficients)
         {
             string functionFormula = "y = ";
             for (int i = polynomialCoefficients.Count - 1; i >= 0; i--)
@@ -47,6 +50,20 @@ namespace PortalData.Services.AnalysisComponents
 
             return functionFormula;
         }
+
+        private static List<double> GenerateNewDates(double[] dates)
+        {
+            var step = (dates.Max() - dates.Min()) / dates.Count();
+            List<double> newDates = new List<double>();
+            
+            for (double i = dates.Min(); i < dates.Max(); i += step)
+            {
+                newDates.Add(i);
+            }
+
+            return newDates;
+        }
+
         private List<double> GetApproximationResults(double[] dates, List<double> polynomialCoefficients)
         {
             List<double> approximationResults = new List<double>();

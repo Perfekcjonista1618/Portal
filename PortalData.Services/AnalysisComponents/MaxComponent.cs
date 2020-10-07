@@ -16,7 +16,7 @@ namespace PortalData.Services.AnalysisComponents
             {
                 X_values = new List<string>(new[]
                 {
-                    "Wynik"
+                    "Result"
                 }),
                 Y_values = new List<double>(new[]
                 {

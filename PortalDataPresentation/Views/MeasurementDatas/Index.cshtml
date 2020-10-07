@@ -61,7 +61,7 @@
         </div>
 
         <div id="chart-container">
-            <canvas id="myChart2" width="400" height="400"></canvas>
+            <canvas id="myChart2"></canvas>
             <input type="text" readonly="true" id="txtFormula" placeholder="Polymonial formula" class="form-control" />
         </div>
         <div style="display: flex; justify-content: space-between; ">
@@ -80,8 +80,9 @@
                 <input type="button" id="btnTrend" value="Trend" class="btn btn-primary"/>
             </div>
             <div style="width: 200px">
-                <input type="date" id="txtPredictionDate" placeholder="Prediction date" class="form-control" />
-                <input type="button" id="btnPredict" value="Predict" class="btn btn-primary" />
+                <label> Two days ahead value forecast</label>
+                <input type="date" id="txtPredictionDate" placeholder="Prediction date" class="form-control"/>
+                <input type="button" id="btnPredict" value="Predict" class="btn btn-primary"/>
             </div>
         </div>
     </div>
@@ -143,7 +144,7 @@
             dataType: 'JSON',
             data: JSON.stringify(data),
             success: function(response) {
-                drawChart(response.labels, response.result, chartType);
+                drawChart(response.labels, response.result, response.result2, chartType);
                 if (response.formula !== "")
                     txtFormula.value = response.formula;
             },
@@ -152,8 +153,8 @@
             }
         });
     }
-    function drawChart(labels, result, chartType) {
-        $('#myChart2').remove(); // this is my <canvas> element
+    function drawChart(labels, result, result2, chartType) {
+        $('#myChart2').remove();
         $('#chart-container').append('<canvas id="myChart2" width="400" height="400"></canvas>');
         var ctx = document.getElementById("myChart2").getContext('2d');
         
@@ -164,22 +165,37 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: ['Wartość'],
+                            label: ['Approximation'],
                             data: result,
                             fill: false,
                             backgroundColor: [
-                                'rgba(75, 192, 192, 0.4)',
+                                'rgba(75, 192, 192, 0.2)',
                             ],
                             borderColor: [
-                                'rgba(75, 192, 192, 0.4)'
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1,
+                            
+                        },
+                        {
+                            label: ['Measurements'],
+                            data: result2,
+                            fill: false,
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)'
                             ],
                             borderWidth: 1
-                        }
+                         }
                     ],
                 },
 
                 options: {
                     responsive: false,
+                    hoverMode: 'index',
+                    stacked: false,
                     maintainAspectRatio: false,
                     scales: {
                         yAxes: [
