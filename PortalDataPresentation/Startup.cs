@@ -59,7 +59,7 @@ namespace PortalDataPresentation
                 //MeasurementDatas/MapLocation  {controller=Home}/{action=Index}
                 routes.MapRoute(
                     name: "default",
-                    template: "portal/{controller=Home}/{action=Index}/{id?}");
+                    template: "portal/{controller=MeasurementDatas}/{action=MapLocation}/{id?}");
             });
         }
     }
