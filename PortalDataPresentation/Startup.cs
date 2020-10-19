@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PortalData.Services;
+using PortalData.Services.AnalysisComponents;
+using PortalDataPresentation.Controllers;
 using PortalDataPresentation.DAL;
 
 namespace PortalDataPresentation
@@ -32,8 +34,14 @@ namespace PortalDataPresentation
             services.AddMvc();
 
             services.AddAutoMapper(typeof(Startup));
+
             services.AddSingleton<IAnalysisComputationService, AnalysisService>();
             services.AddScoped<IMeasurementDataService,MeasurementsDataService>();
+
+            services.AddTransient<IComputable, AverageComponent>();
+            services.AddTransient<IComputable, MaxComponent>();
+            services.AddTransient<IComputable, PredictionComponent>();
+            services.AddTransient<IComputable, TrendComponent>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

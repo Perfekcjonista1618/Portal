@@ -13,6 +13,8 @@ namespace PortalData.Services.AnalysisComponents
     public class TrendComponent : IComputable
     {
         private ComputationResultVM _result { get; set; }
+        public string Name { get { return "Trend"; } }
+
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             var measurementDates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();

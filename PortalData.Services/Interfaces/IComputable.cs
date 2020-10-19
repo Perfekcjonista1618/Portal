@@ -8,6 +8,7 @@ namespace PortalData.Services
 {
     public interface IComputable
     {
+        string Name { get; }
         void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
         ComputationResultVM GetResult();
     }

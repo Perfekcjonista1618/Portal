@@ -1,17 +1,17 @@
 ﻿@model PortalDataPresentation.ViewModels.LineChartVM
 @{
     string width = Model.ChartWidth.HasValue ? @Model.ChartWidth.Value.ToString() : "1000";
-    string height = Model.ChartHeight.HasValue ? @Model.ChartHeight.Value.ToString() : "1000";
+    string height = Model.ChartHeight.HasValue ? @Model.ChartHeight.Value.ToString() : "600";
 }
-
-<canvas id="myChart" width=@width height="@height"></canvas>
+@*width=@width height="@height"*@
+<canvas id="measurementsChart" style="height: 70vh; width: 100vw; max-width: 100%; "></canvas>
 <script src="~/js/Chart.js"></script>
 <script src="~/portal/js/Chart.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded',function () {
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx,
+        var ctx = document.getElementById("measurementsChart").getContext('2d');
+        var measurementsChart = new Chart(ctx,
             {
                 type: 'line',
                 data: {

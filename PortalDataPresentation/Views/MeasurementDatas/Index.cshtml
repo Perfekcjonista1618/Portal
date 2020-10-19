@@ -5,206 +5,41 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="main.js"></script>
 </head>
-
 <body>
-    <div>
-        <h2>Measurements for: <b>@Model.dataTypeName </b> </h2>
-        <div class="md-form">
-            <form asp-controller="MeasurementDatas" asp-action="Index" method="get">
-                <table>
-                    <tr>
-                        <td>
-                            <label>Data type: </label>
-                        </td>
-                        <td>
-                            <label>Date from: </label>
-                        </td>
-                        <td>
-                            <label>Date to: </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <select asp-for="dataTypeName" asp-items="Model.dataTypeNames" class="form-control"></select>
-                        </td>
-                        <td>
-                            <input asp-for="minDate" value="@Model.minDate.ToString("yyyy-MM-dd")" asp-format="{0:yyyy-mm-dd}" type="date" class="form-control" />
-                        </td>
-                        <td>
-                            <input asp-for="maxDate" value="@Model.maxDate.ToString("yyyy-MM-dd")" asp-format="{0:yyyy-mm-dd}" type="date" class="form-control" />
-                        </td>
-                    </tr>
-                </table>
-                <br /><button class="btn btn-primary" type="submit">Filter</button>
-            </form>
+    <div class="col-md-6; col-lg-12">
+        <h2>Measurements for: <b>@Model.DataTypeName </b> </h2>
 
+        <div>
+            @await Html.PartialAsync("DataFilter", Model)
+        </div>
+
+        <div style="margin-top: 10px">
             <form asp-controller="MeasurementDatas" asp-action="DownloadCsv" method="get">
-                <input asp-for="dataTypeName" type="hidden" value="@Model.dataTypeName" />
-                <input asp-for="minDate" type="hidden" value="@Model.minDate" />
-                <input asp-for="maxDate" type="hidden" value="@Model.maxDate" />
+                <input asp-for="DataTypeName" type="hidden" value="@Model.DataTypeName" />
+                <input asp-for="MinDate" type="hidden" value="@Model.MinDate" />
+                <input asp-for="MaxDate" type="hidden" value="@Model.MaxDate" />
                 <button class="btn btn-success" id="btnDownloadCSV" type="submit">Download CSV</button>
             </form>
         </div>
-        <div class="col-md-6; col-lg-12">
-            @await Html.PartialAsync("RefreshTable", Model.Data)
-        </div>
-        <div class="col-md-6; col-lg-12">
+        <div>
             @await Html.PartialAsync("LineChart", Model)
         </div>
-
-        <div id="chart-container">
-            <canvas id="myChart2"></canvas>
-            <input type="text" readonly="true" id="txtFormula" placeholder="Polymonial formula" class="form-control" />
+        <div>
+            @{
+                foreach (var operation in Model.Operations)
+                {
+                    <input type="button" class="btn btn-primary" value="@operation" onclick="location.href=' @Url.Action("Index", @operation)'" />
+                }
+            }
         </div>
-        <div style="display: flex; justify-content: space-between; ">
-            <div>
-                <input type="button" id="btnAverage" value="Average" class="btn btn-primary" />
-                <input type="button" id="btnMax" value="Max" class="btn btn-primary" />
-            </div>
-            <div style="width: 200px;">
-                <label>Regression Method</label>
-                <select class="form-control" id="directRegressionMethod">
-                    <option>QR</option>
-                    <option value="NormalEquations">Normal Equations</option>
-                    <option value="Svd">SVD</option>
-                </select>
-                <input type="text" id="txtTrend" placeholder="Polymonial degree" class="form-control"/>
-                <input type="button" id="btnTrend" value="Trend" class="btn btn-primary"/>
-            </div>
-            <div style="width: 200px">
-                <label> Two days ahead value forecast</label>
-                <input type="date" id="txtPredictionDate" placeholder="Prediction date" class="form-control"/>
-                <input type="button" id="btnPredict" value="Predict" class="btn btn-primary"/>
-            </div>
+        <div>
+            @await Html.PartialAsync("RefreshTable", Model.Data)
         </div>
     </div>
 </body>
 </html>
-
-<script type="text/javascript"></script>
-<script>
-
-    var btnAverage = document.getElementById("btnAverage");
-    var btnMax = document.getElementById("btnMax");
-
-    var btnTrend = document.getElementById("btnTrend");
-    var txtTrend = document.getElementById("txtTrend");
-    var txtFormula = document.getElementById("txtFormula");
-
-    var txtPredictionDate = document.getElementById("txtPredictionDate");
-    var btnPredict = document.getElementById("btnPredict");
-
-    var directRegressionMethod = document.getElementById("directRegressionMethod");
-
-    btnAverage.addEventListener('click',
-        function() {
-            passDataToAnalysis("Average",'bar');
-        });
-
-    btnMax.addEventListener('click',
-        function() {
-            passDataToAnalysis("Max",'bar');
-        });
-
-    btnTrend.addEventListener('click',
-        function () {
-            var polymonialDegree = txtTrend.value;
-            passDataToAnalysis("Trend",'line',polymonialDegree);
-        });
-
-    btnPredict.addEventListener('click',
-        function () {
-            var date = txtPredictionDate.value;
-            passDataToAnalysis("Predict", 'bar', txtTrend.value, date);
-        });
-
-    function passDataToAnalysis(operation, chartType, polymonialDegree, predictionDate) {
-        var data = {
-            "minDate": "@Model.minDate",
-            "maxDate": "@Model.maxDate",
-            "dataTypeName": "@Model.dataTypeName",
-            "operation": operation,
-            "polynomialDegree": polymonialDegree,
-            "predictionDate": predictionDate,
-            "regressionMethod": directRegressionMethod.value
-        };
-
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            url: '@Url.Action("Analyze", "AnalysisComputation")' ,
-            dataType: 'JSON',
-            data: JSON.stringify(data),
-            success: function(response) {
-                drawChart(response.labels, response.result, response.result2, chartType);
-                if (response.formula !== "")
-                    txtFormula.value = response.formula;
-            },
-            error: function(e) {
-                alert(e);
-            }
-        });
-    }
-    function drawChart(labels, result, result2, chartType) {
-        $('#myChart2').remove();
-        $('#chart-container').append('<canvas id="myChart2" width="400" height="400"></canvas>');
-        var ctx = document.getElementById("myChart2").getContext('2d');
-        
-        var myChart = new Chart(ctx,
-            {
-                type: chartType,
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: ['Approximation'],
-                            data: result,
-                            fill: false,
-                            backgroundColor: [
-                                'rgba(75, 192, 192, 0.2)',
-                            ],
-                            borderColor: [
-                                'rgba(75, 192, 192, 1)'
-                            ],
-                            borderWidth: 1,
-                            
-                        },
-                        {
-                            label: ['Measurements'],
-                            data: result2,
-                            fill: false,
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 0.2)',
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 1)'
-                            ],
-                            borderWidth: 1
-                         }
-                    ],
-                },
-
-                options: {
-                    responsive: false,
-                    hoverMode: 'index',
-                    stacked: false,
-                    maintainAspectRatio: false,
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }
-                        ]
-                    }
-                }
-            });
-    }
-</script>

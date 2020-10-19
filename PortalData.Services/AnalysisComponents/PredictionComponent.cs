@@ -11,6 +11,8 @@ namespace PortalData.Services.AnalysisComponents
     public class PredictionComponent : IComputable
     {
         private ComputationResultVM _result { get; set; }
+        public string Name { get { return "Prediction"; } }
+
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             var dates = measurements.Select(x => x.RecordCreateTime.ToOADate()).ToArray();

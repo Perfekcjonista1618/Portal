@@ -1,0 +1,90 @@
+﻿@model PortalDataPresentation.ViewModels.LineChartVM
+
+<div id="chart-container">
+    <canvas id="analysisChart"></canvas>
+</div>
+<script>
+    function passDataToAnalysis(chartType, polynomialDegree, predictionDate) {
+        var data = {
+            "minDate": "@Model.MinDate",
+            "maxDate": "@Model.MaxDate",
+            "dataTypeName": "@Model.DataTypeName",
+            "polynomialDegree": polynomialDegree,
+            "predictionDate": predictionDate,
+            "regressionMethod": directRegressionMethod.value
+        };
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            url: '@Url.Action(@Model.Controller, @Model.Controller)' ,
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            success: function(response) {
+                drawChart(response.labels, response.result, response.result2, chartType);
+                if (response.formula !== "")
+                    txtFormula.value = response.formula;
+            },
+            error: function(e) {
+                alert(e);
+            }
+        });
+    }
+
+    function drawChart(labels, result, result2, chartType) {
+        $('#analysisChart').remove();
+        $('#chart-container').append('<canvas id="analysisChart" width="400" height="400"></canvas>');
+        var ctx = document.getElementById("analysisChart").getContext('2d');
+
+        var myChart = new Chart(ctx,
+            {
+                type: chartType,
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: ['Approximation'],
+                            data: result,
+                            fill: false,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1,
+
+                        },
+                        {
+                            label: ['Measurements'],
+                            data: result2,
+                            fill: false,
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)'
+                            ],
+                            borderWidth: 1
+                         }
+                    ],
+                },
+
+                options: {
+                    responsive: false,
+                    hoverMode: 'index',
+                    stacked: false,
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+    }
+</script>

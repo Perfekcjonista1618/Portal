@@ -6,6 +6,9 @@ namespace PortalData.Services
 {
     public interface IAnalysisComputationService
     {
-        ComputationResultVM Compute(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
+        ComputationResultVM Average(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
+        ComputationResultVM Max(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
+        ComputationResultVM Trend(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
+        ComputationResultVM Prediction(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel);
     }
 }

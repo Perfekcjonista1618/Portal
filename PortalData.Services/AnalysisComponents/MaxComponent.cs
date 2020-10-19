@@ -10,6 +10,8 @@ namespace PortalData.Services.AnalysisComponents
     public class MaxComponent : IComputable
     {
         private ComputationResultVM _result { get; set; }
+        public string Name { get { return "Max"; } }
+
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
             _result = new ComputationResultVM()

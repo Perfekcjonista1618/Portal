@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PortalData.Models;
@@ -22,7 +23,7 @@ namespace PortalData.Services
             _instalationsRepo = new EfRepository<ArtisticInstalation>(context);
             _receivedMeasurementsRepo = new EfRepository<ReceivedMeasurement>(context);
         }
-        public IQueryable<ReceivedMeasurement> ExtractData(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, int? resultWidth, int? resultHeight)
+        public IQueryable<ReceivedMeasurement> ExtractData(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate)
         {
             IQueryable<ReceivedMeasurement> measurements = null;
 
@@ -40,16 +41,18 @@ namespace PortalData.Services
             return measurements;
         }
 
-        public LineChartVM CreateViewModel(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate, IQueryable<ReceivedMeasurement> measurements,
-            int? resultWidth, int? resultHeight)
+        public LineChartVM CreateViewModel(int? portalID, string controllerName, string dataTypeName, DateTime? minDate, DateTime? maxDate, IEnumerable<string> operations,
+            IQueryable<ReceivedMeasurement> measurements, int? resultWidth, int? resultHeight)
         {
             LineChartVM viewModel = new LineChartVM()
             {
                 ChartHeight = resultHeight,
                 ChartWidth = resultWidth,
-                dataTypeName = dataTypeName,
-                minDate = minDate ?? DateTime.MinValue,
-                maxDate = maxDate ?? DateTime.MaxValue,
+                Controller = controllerName,
+                DataTypeName = dataTypeName,
+                MinDate = minDate ?? DateTime.MinValue,
+                MaxDate = maxDate ?? DateTime.MaxValue,
+                Operations = operations,
                 Data = measurements.ToList()
             };
             return viewModel;

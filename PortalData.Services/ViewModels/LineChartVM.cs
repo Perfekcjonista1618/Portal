@@ -10,11 +10,13 @@ namespace PortalDataPresentation.ViewModels
         public List<ReceivedMeasurement> Data { get; set; }
         public int? ChartWidth { get; set; }
         public int? ChartHeight { get; set; }
-        public DateTime minDate { get; set; }
-        public DateTime maxDate { get; set; }
-        public string dataTypeName { get; set; }
+        public DateTime MinDate { get; set; }
+        public DateTime MaxDate { get; set; }
+        public string DataTypeName { get; set; }
+        public IEnumerable<string> Operations { get; set; }
+        public string Controller { get; set; }
 
-        public List<SelectListItem> dataTypeNames { get; } = new List<SelectListItem>
+        public List<SelectListItem> DataTypeNames { get; } = new List<SelectListItem>
         {
             new SelectListItem { Value = String.Empty, Text = "All"},
             new SelectListItem { Value = "Temperature", Text = "Temperature" },

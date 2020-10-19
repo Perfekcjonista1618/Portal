@@ -7,7 +7,10 @@ namespace PortalData.Services.AnalysisComponents
 {
     public class AverageComponent :IComputable
     {
+
         private ComputationResultVM _result { get; set; }
+
+        public string Name{ get { return "Average"; } }
 
         public void Analyze(List<ReceivedMeasurement> measurements, AnalysisVM viewmodel)
         {
