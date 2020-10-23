@@ -3,8 +3,7 @@
     string width = Model.ChartWidth.HasValue ? @Model.ChartWidth.Value.ToString() : "1000";
     string height = Model.ChartHeight.HasValue ? @Model.ChartHeight.Value.ToString() : "600";
 }
-@*width=@width height="@height"*@
-<canvas id="measurementsChart" style="height: 70vh; width: 100vw; max-width: 100%; "></canvas>
+<canvas id="measurementsChart" width=@width height=@height;></canvas>
 <script src="~/js/Chart.js"></script>
 <script src="~/portal/js/Chart.js"></script>
 

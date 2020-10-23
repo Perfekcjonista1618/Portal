@@ -7,7 +7,6 @@ namespace PortalDataPresentation.ViewModels
         public string minDate { get; set; }
         public string maxDate { get; set; }
         public string dataTypeName { get; set; }
-        public string operation { get; set; }
         public int polynomialDegree { get; set; }
         public string predictionDate { get; set; }
         public string regressionMethod { get; set; }

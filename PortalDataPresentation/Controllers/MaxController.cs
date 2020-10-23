@@ -9,7 +9,6 @@ using PortalDataPresentation.ViewModels;
 
 namespace PortalDataPresentation.Controllers
 {
-
     public class MaxController : Controller
     {
         private readonly IMeasurementDataService _measurementsDataService;
