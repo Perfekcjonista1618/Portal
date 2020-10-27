@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using PortalData.Models;
@@ -23,10 +24,29 @@ namespace PortalData.Services
             _instalationsRepo = new EfRepository<ArtisticInstalation>(context);
             _receivedMeasurementsRepo = new EfRepository<ReceivedMeasurement>(context);
         }
+
+        public AnalysisVM ParseData(AnalysisVM viewModel)
+        {
+            if (viewModel.dataTypeName.Equals("All"))
+                viewModel.dataTypeName = null;
+            //if (DateTime.TryParse(viewModel.minDate))
+            //{
+
+            //}
+            DateTime minDateParsedFormat = DateTime.Parse(viewModel.minDate);
+            DateTime maxDateParsedFormat = DateTime.Parse(viewModel.maxDate);
+
+           // DateTime.ParseExact(viewModel.minDate, "M/d/yy  h:mm:ss tt", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
+
+            viewModel.minDate = minDateParsedFormat.ToString("yyyy-MM-dd HH:mm:ss");
+            viewModel.maxDate = maxDateParsedFormat.ToString("yyyy-MM-dd HH:mm:ss");
+            return viewModel;
+        }
+
         public IQueryable<ReceivedMeasurement> ExtractData(int? portalID, string dataTypeName, DateTime? minDate, DateTime? maxDate)
         {
             IQueryable<ReceivedMeasurement> measurements = null;
-
+            
             if (!string.IsNullOrWhiteSpace(dataTypeName))
                 measurements = _receivedMeasurementsRepo
                     .SearchBy(x => x.DataTypeKeyName == dataTypeName);
@@ -35,7 +55,7 @@ namespace PortalData.Services
 
             if (minDate != null && minDate != DateTime.MinValue)
                 measurements = measurements.Where(m => m.RecordCreateTime > minDate);
-
+            
             if (maxDate != null && maxDate != DateTime.MaxValue)
                 measurements = measurements.Where(m => m.RecordCreateTime < maxDate);
             return measurements;
@@ -50,8 +70,8 @@ namespace PortalData.Services
                 ChartWidth = resultWidth,
                 Controller = controllerName,
                 DataTypeName = dataTypeName,
-                MinDate = minDate ?? DateTime.MinValue,
-                MaxDate = maxDate ?? DateTime.MaxValue,
+                MinDate = minDate ?? DateTime.Parse(DateTime.MinValue.ToString("yyyy-MM-dd HH:mm:ss")),
+                MaxDate = maxDate ?? DateTime.Parse(DateTime.MaxValue.ToString("yyyy-MM-dd HH:mm:ss")),
                 Operations = operations,
                 Data = measurements.ToList()
             };

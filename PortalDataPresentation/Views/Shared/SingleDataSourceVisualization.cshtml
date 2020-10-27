@@ -6,8 +6,8 @@
 <script>
     function passDataToAnalysis(chartType, polynomialDegree, predictionDate,directRegressionMethod) {
         var data = {
-            "minDate": "@Model.MinDate",
-            "maxDate": "@Model.MaxDate",
+            "minDate": "@Model.MinDate.ToString("yyyy-MM-dd HH:mm:ss")",
+            "maxDate": "@Model.MaxDate.ToString("yyyy-MM-dd HH:mm:ss")",
             "dataTypeName": "@Model.DataTypeName",
             "polynomialDegree": polynomialDegree,
             "predictionDate": predictionDate,
@@ -20,7 +20,8 @@
             url: '@Url.Action(@Model.Controller, @Model.Controller)' ,
             dataType: 'JSON',
             data: JSON.stringify(data),
-            success: function(response) {
+            success: function (response) {
+                console.log(data);
                 drawChart(response.labels, response.result, chartType);
                 if (response.formula !== "")
                     txtFormula.value = response.formula;

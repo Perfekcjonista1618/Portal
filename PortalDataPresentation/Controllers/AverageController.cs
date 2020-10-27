@@ -36,21 +36,21 @@ namespace PortalDataPresentation.Controllers
         }
 
         [HttpPost]
-        public JsonResult Average([FromBody] AnalysisVM viewmodel)
+        public JsonResult Average([FromBody] AnalysisVM viewModel)
         {
-            if (viewmodel != null)
+            if (viewModel != null)
             {
                 List<ReceivedMeasurement> measurements;
-                if (viewmodel.dataTypeName.Equals("All"))
-                    viewmodel.dataTypeName = null;
-
+                
+                var parsedViewModel = _measurementsDataService.ParseData(viewModel);
+                
                 measurements =
-                    _measurementsDataService.ExtractData(null, viewmodel.dataTypeName, DateTime.Parse(viewmodel.minDate),
-                        DateTime.Parse(viewmodel.maxDate)).ToList();
+                    _measurementsDataService.ExtractData(null, parsedViewModel.dataTypeName, DateTime.Parse(parsedViewModel.minDate),
+                        DateTime.Parse(parsedViewModel.maxDate)).ToList();
 
                 if (measurements.Count > 0)
                 {
-                    var result = _analysisService.Average(measurements, viewmodel);
+                    var result = _analysisService.Average(measurements, viewModel);
 
                     return Json(new { success = true, labels = result.X_values, result = result.Y_values});
                 }

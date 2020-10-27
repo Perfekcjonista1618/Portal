@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PortalData.Models\PortalData.Models.csproj" />
     <ProjectReference Include="..\PortalData.Services\PortalData.Services.csproj" />
   </ItemGroup>
