@@ -33,8 +33,9 @@ namespace PortalData.Services.AnalysisComponents
             _result = new ComputationResultVM()
             {
                 X_values = measurementDates.Select(x => DateTime.FromOADate(x).ToString("yyyy-MM-dd HH:mm:ss")).ToList(),
-                Y2_values = measurements.Select(x => x.Value).ToList(),
-                Y_values = approximationResults,
+                X2_values = newDates.Select(x => DateTime.FromOADate(x).ToString("yyyy-MM-dd HH:mm:ss")).ToList(),
+                Y_values = measurements.Select(x => x.Value).ToList(),
+                Y2_values = approximationResults,
                 Formula = functionFormula
             };
         }

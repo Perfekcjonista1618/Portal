@@ -21,7 +21,7 @@
             dataType: 'JSON',
             data: JSON.stringify(data),
             success: function(response) {
-                drawChart(response.labels, response.result, response.result2, chartType);
+                drawChart(response, chartType);
                 if (response.formula !== "")
                     txtFormula.value = response.formula;
             },
@@ -31,20 +31,41 @@
         });
     }
 
-    function drawChart(labels, result, result2, chartType) {
+    function drawChart(response, chartType) {
         $('#analysisChart').remove();
         $('#chart-container').append('<canvas id="analysisChart" width="400" height="400"></canvas>');
         var ctx = document.getElementById("analysisChart").getContext('2d');
+
+        //var data = [];
+        //for (var row in response.labels) {
+        //    data.push({ x: response.labels[row], y: response.result[row] });
+        //}
+        //var data2 = [];
+        //for (var row in response.labels2) {
+        //    data2.push({ x: response.labels2[row], y: response.result2[row] });
+        //}
 
         var myChart = new Chart(ctx,
             {
                 type: chartType,
                 data: {
-                    labels: labels,
+                    labels: response.labels,
                     datasets: [
                         {
+                            label: ['Measurements'],
+                            data: response.result,
+                            fill: false,
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)'
+                            ],
+                            borderWidth: 1
+                        },
+                        {
                             label: ['Approximation'],
-                            data: result,
+                            data: response.result2,
                             fill: false,
                             backgroundColor: [
                                 'rgba(75, 192, 192, 0.2)',
@@ -54,22 +75,9 @@
                             ],
                             borderWidth: 1,
 
-                        },
-                        {
-                            label: ['Measurements'],
-                            data: result2,
-                            fill: false,
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 0.2)',
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 1)'
-                            ],
-                            borderWidth: 1
-                         }
+                        }
                     ],
                 },
-
                 options: {
                     responsive: false,
                     hoverMode: 'index',
