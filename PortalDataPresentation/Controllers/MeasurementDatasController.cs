@@ -31,9 +31,6 @@ namespace PortalDataPresentation.Controllers
             measurements =
                 _measurementsDataService.ExtractData(portalID, dataTypeName, minDate, maxDate);
 
-            if (string.IsNullOrWhiteSpace(dataTypeName))
-                dataTypeName = "All";
-
             viewModel = _measurementsDataService.CreateViewModel(null, "MeasurementDatas", dataTypeName, minDate, maxDate, _analysisOptions.Select(a => a.Name), measurements,  resultWidth, resultHeight);
 
             return View(viewModel);
@@ -58,12 +55,12 @@ namespace PortalDataPresentation.Controllers
             return PartialView(viewModel);
         }
 
-        public IActionResult DownloadCsv(string dataTypeName, DateTime? minDate, DateTime? maxDate)
+        public IActionResult DownloadCsv(string dataTypeName, string minDate, string maxDate)
         {
             IQueryable<ReceivedMeasurement> measurements;
             StringBuilder builder;
 
-            measurements = _measurementsDataService.ExtractData(null, dataTypeName, minDate, maxDate);
+            measurements = _measurementsDataService.ExtractData(null, dataTypeName, DateTime.Parse(minDate), DateTime.Parse(maxDate));
             builder = _measurementsDataService.CreateCsv(measurements);
 
             return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", "Measurements.csv");

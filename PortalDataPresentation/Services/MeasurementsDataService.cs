@@ -29,14 +29,8 @@ namespace PortalData.Services
         {
             if (viewModel.dataTypeName.Equals("All"))
                 viewModel.dataTypeName = null;
-            //if (DateTime.TryParse(viewModel.minDate))
-            //{
-
-            //}
             DateTime minDateParsedFormat = DateTime.Parse(viewModel.minDate);
             DateTime maxDateParsedFormat = DateTime.Parse(viewModel.maxDate);
-
-           // DateTime.ParseExact(viewModel.minDate, "M/d/yy  h:mm:ss tt", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd HH:mm:ss");
 
             viewModel.minDate = minDateParsedFormat.ToString("yyyy-MM-dd HH:mm:ss");
             viewModel.maxDate = maxDateParsedFormat.ToString("yyyy-MM-dd HH:mm:ss");

@@ -26,9 +26,6 @@ namespace PortalDataPresentation.Controllers
             measurements =
                 _measurementsDataService.ExtractData(portalID, dataTypeName, minDate, maxDate);
 
-            if (string.IsNullOrWhiteSpace(dataTypeName))
-                dataTypeName = "All";
-
             viewModel = _measurementsDataService.CreateViewModel(null, "Prediction", dataTypeName, minDate, maxDate, null, measurements, resultWidth, resultHeight);
 
             return View(viewModel);
